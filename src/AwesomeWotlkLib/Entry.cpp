@@ -8,19 +8,6 @@
 #include <Windows.h>
 #include <Detours/detours.h>
 
-// <--- NUEVO: Inicio del bloque de código para probar SetScale ----
-// 1. Definimos la función original usando la dirección que nos dio el creador.
-static auto* SetScale_original = (void(*)())0x004040F0;
-
-// 2. Creamos nuestra función "hook". Por ahora, solo hará que el juego crashee.
-// ¡Si el juego se cierra al llamar a :SetScale(), significa que el hook FUNCIONÓ!
-static void SetScale_hook()
-{
-    // Forzamos un crash para saber que hemos llegado aquí.
-    *(int*)0 = 0;
-}
-// <--- NUEVO: Fin del bloque de código ----
-
 
 static int lua_debugbreak(lua_State* L)
 {
@@ -56,11 +43,6 @@ static void OnAttach()
 
     // Initialize modules
     DetourTransactionBegin();
-
-    // <--- NUEVO: Adjuntamos nuestro hook para SetScale ----
-    DetourAttach(&(LPVOID&)SetScale_original, SetScale_hook);
-    // <--- NUEVO: Fin de la línea a añadir ----
-
     Hooks::initialize();
     BugFixes::initialize();
     CommandLine::initialize();
